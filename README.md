@@ -1,2 +1,2 @@
 # Clinic-Management-System
-clinic managment system ITI project - Team 4
+clinic management system ITI project - Team 4
