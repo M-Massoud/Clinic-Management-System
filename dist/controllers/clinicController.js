@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteClinic = exports.getClinicById = exports.updateClinic = exports.createNewClinic = exports.getAllClinics = void 0;
 const mongoose_1 = require("mongoose");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const clinicModel_1 = __importDefault(require("../models/clinicModel"));
 const getAllClinics = (request, response, next) => {
     // console.log(request.query);
@@ -29,22 +30,24 @@ const getAllClinics = (request, response, next) => {
 };
 exports.getAllClinics = getAllClinics;
 const createNewClinic = function (request, response, next) {
-    let clinic = new clinicModel_1.default({
-        name: request.body.name,
-        mobile: request.body.mobile,
-        email: request.body.email,
-        password: request.body.password,
-        'address.city': request.body.address.city,
-        'address.street': request.body.address.street,
-        'address.building': request.body.address.building,
-        medicine: request.body.medicine,
+    bcrypt_1.default.hash(request.body.password, 8, function (err, hash) {
+        let clinic = new clinicModel_1.default({
+            name: request.body.name,
+            mobile: request.body.mobile,
+            email: request.body.email,
+            password: hash,
+            'address.city': request.body.address.city,
+            'address.street': request.body.address.street,
+            'address.building': request.body.address.building,
+            medicine: request.body.medicine,
+        });
+        clinic
+            .save()
+            .then(data => {
+            response.status(201).json({ data: 'added' + data });
+        })
+            .catch(error => next(error));
     });
-    clinic
-        .save()
-        .then(data => {
-        response.status(201).json({ data: 'added' + data });
-    })
-        .catch(error => next(error));
 };
 exports.createNewClinic = createNewClinic;
 const updateClinic = (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {

@@ -1,5 +1,7 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import mongoose, { Error } from 'mongoose';
+import bcrypt from 'bcrypt';
+
 import Clinic from '../models/clinicModel';
 
 export const getAllClinics = (
@@ -24,22 +26,24 @@ export const createNewClinic = function (
   response: Response,
   next: NextFunction
 ) {
-  let clinic = new Clinic({
-    name: request.body.name,
-    mobile: request.body.mobile,
-    email: request.body.email,
-    password: request.body.password,
-    'address.city': request.body.address.city,
-    'address.street': request.body.address.street,
-    'address.building': request.body.address.building,
-    medicine: request.body.medicine,
+  bcrypt.hash(request.body.password, 8, function (err, hash) {
+    let clinic = new Clinic({
+      name: request.body.name,
+      mobile: request.body.mobile,
+      email: request.body.email,
+      password: hash,
+      'address.city': request.body.address.city,
+      'address.street': request.body.address.street,
+      'address.building': request.body.address.building,
+      medicine: request.body.medicine,
+    });
+    clinic
+      .save()
+      .then(data => {
+        response.status(201).json({ data: 'added' + data });
+      })
+      .catch(error => next(error));
   });
-  clinic
-    .save()
-    .then(data => {
-      response.status(201).json({ data: 'added' + data });
-    })
-    .catch(error => next(error));
 };
 
 export const updateClinic = async (
