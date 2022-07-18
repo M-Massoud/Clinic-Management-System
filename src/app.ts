@@ -34,6 +34,26 @@ mongoose
     });
   })
   .catch((error: any) => console.log('Db Connection Error ' + error));
+// import dotenv from "./env";
+// dotenv.config();
+import 'dotenv/config';
+// import { strict as assert } from 'assert';
+// import { load } from 'ts-dotenv';
+import patientRoute from './routes/patientRoute';
+import billsRoute from './routes/billsRoute';
+import loginRoute from './routes/loginRoute';
+// const env = load({
+//     DB_URL: String,
+//     secret_Key: String,
+//     saltRounds: Number,
+// });
+
+// mongoose.connect(process.env.DB_URL as string)
+//     .then(() => {
+//         console.log("DB Connected")
+//         server.listen(process.env.port as string || port);
+//     })
+//     .catch((error: Error) => console.log("Db Connection Error " + error))
 
 //a- Middleware to write request url and method
 server.use(morgan(':method :url'));
@@ -72,9 +92,26 @@ interface Error {
 }
 // d- One Error handling middleware
 // @ts-ignore
+// server.use(
+//   // @ts-ignore
+//   (error, request: Request, response: Response, next: NextFunction) => {
+server.use(loginRoute);
+server.use(patientRoute);
+server.use(billsRoute);
+
+// c- General middleware for not Found url pathes with 404 status code.
+server.use((request: Request, response: Response) => {
+  response.status(404).send('Page Not Found');
+});
+
+interface Error {
+  status?: number;
+}
+
+// d- One Error handling middleware
+
 server.use(
-  // @ts-ignore
-  (error, request: Request, response: Response, next: NextFunction) => {
+  (error: Error, request: Request, response: Response, next: NextFunction) => {
     let status = error.status || 500;
     response.status(status).json({ message: 'Internal Error' + error });
   }
