@@ -7,7 +7,8 @@ import mongoose from 'mongoose';
 // import dotenv from "dotenv";
 // dotenv.config()
 import 'dotenv/config'
-
+import doctorRoutes from './routes/DoctorRoute'
+import appointmentRoutes from './routes/AppointmentRoute'
 // const loginRoute = import("./routes/login");
 
 
@@ -30,7 +31,9 @@ server.use(cors());
 // routes
 server.use(express.json());
 // server.use(loginRoute);
+server.use(doctorRoutes);
 
+server.use(appointmentRoutes);
 
 
 // c- General middleware for not Found url pathes with 404 status code.
