@@ -8,6 +8,11 @@ const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
+// const mongoose = require('mongoose');
+const adminRoute_1 = __importDefault(require("./routes/adminRoute"));
+// const adminRoute = require('./routes/adminRoute');
+const reportRoute_1 = __importDefault(require("./routes/reportRoute"));
+const employRoute_1 = __importDefault(require("./routes/employRoute"));
 // need edit later
 // import dotenv from "dotenv";
 // dotenv.config()
@@ -46,8 +51,18 @@ server.use(AppointmentRoute_1.default);
 server.use((request, response) => {
     response.status(404).send('Page Not Found');
 });
+server.use(adminRoute_1.default);
+server.use(reportRoute_1.default);
+server.use(employRoute_1.default);
+// c- General middleware for not Found url pathes with 404 status code.
+server.use((request, response) => {
+    response.status(404).send('Page Not Found');
+});
 // d- One Error handling middleware
-server.use((error, request, response, next) => {
+// @ts-ignore
+server.use(
+// @ts-ignore
+(error, request, response, next) => {
     let status = error.status || 500;
     response.status(status).json({ message: 'Internal Error' + error });
 });

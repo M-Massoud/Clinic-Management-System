@@ -3,6 +3,11 @@ import express, { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import mongoose from 'mongoose';
+// const mongoose = require('mongoose');
+import adminRoute from './routes/adminRoute';
+// const adminRoute = require('./routes/adminRoute');
+import reportRoute from './routes/reportRoute';
+import employeRoute from './routes/employRoute';
 // need edit later
 // import dotenv from "dotenv";
 // dotenv.config()
@@ -53,10 +58,23 @@ interface Error {
   status?: number;
 }
 
-// d- One Error handling middleware
+server.use(adminRoute);
+server.use(reportRoute);
+server.use(employeRoute);
 
+// c- General middleware for not Found url pathes with 404 status code.
+server.use((request: Request, response: Response) => {
+  response.status(404).send('Page Not Found');
+});
+interface Error {
+  // @ts-ignore
+  status?: Number;
+}
+// d- One Error handling middleware
+// @ts-ignore
 server.use(
-  (error: Error, request: Request, response: Response, next: NextFunction) => {
+  // @ts-ignore
+  (error, request: Request, response: Response, next: NextFunction) => {
     let status = error.status || 500;
     response.status(status).json({ message: 'Internal Error' + error });
   }
