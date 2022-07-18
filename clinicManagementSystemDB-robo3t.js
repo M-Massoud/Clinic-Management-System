@@ -1,3 +1,0 @@
-show dbs
-
-show collections
