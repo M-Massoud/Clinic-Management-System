@@ -15,6 +15,9 @@ require("dotenv/config");
 // import routes
 const clinicRoute_1 = __importDefault(require("./routes/clinicRoute"));
 const medicineRoute_1 = __importDefault(require("./routes/medicineRoute"));
+const DoctorRoute_1 = __importDefault(require("./routes/DoctorRoute"));
+const AppointmentRoute_1 = __importDefault(require("./routes/AppointmentRoute"));
+// const loginRoute = import("./routes/login");
 // const loginRoute = import("./routes/login");
 const server = (0, express_1.default)();
 const port = 8080;
@@ -36,6 +39,9 @@ server.use((0, cors_1.default)());
 server.use(express_1.default.json());
 server.use(clinicRoute_1.default);
 server.use(medicineRoute_1.default);
+// server.use(loginRoute);
+server.use(DoctorRoute_1.default);
+server.use(AppointmentRoute_1.default);
 // c- General middleware for not Found url pathes with 404 status code.
 server.use((request, response) => {
     response.status(404).send('Page Not Found');

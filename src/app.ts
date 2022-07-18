@@ -11,6 +11,9 @@ import 'dotenv/config';
 // import routes
 import clinicRoutes from './routes/clinicRoute';
 import medicineRoutes from './routes/medicineRoute';
+import doctorRoutes from './routes/DoctorRoute';
+import appointmentRoutes from './routes/AppointmentRoute';
+// const loginRoute = import("./routes/login");
 
 // const loginRoute = import("./routes/login");
 
@@ -37,6 +40,9 @@ server.use(cors());
 server.use(express.json());
 server.use(clinicRoutes);
 server.use(medicineRoutes);
+// server.use(loginRoute);
+server.use(doctorRoutes);
+server.use(appointmentRoutes);
 
 // c- General middleware for not Found url pathes with 404 status code.
 server.use((request, response) => {
