@@ -57,15 +57,6 @@ server.use(changePasswordRoute);
 server.use((request: Request, response: Response) => {
   response.status(404).send('Page Not Found');
 });
-interface Error {
-  // @ts-ignore
-  status?: Number;
-}
-// d- One Error handling middleware
-// @ts-ignore
-// server.use(
-//   // @ts-ignore
-//   (error, request: Request, response: Response, next: NextFunction) => {
 
 // c- General middleware for not Found url pathes with 404 status code.
 server.use((request: Request, response: Response) => {

@@ -7,13 +7,35 @@ const salt: string = bcrypt.genSaltSync(
 );
 
 export const getAllPatients: RequestHandler = (request, response, next) => {
-  Patient.find({})
-    .then(data => {
+
+  if (request.query.sort) {
+    Patient.find({}).sort((request.query.sort as string)).then(data => {
       response.status(200).json(data);
     })
-    .catch(error => {
-      next(error);
-    });
+      .catch(error => {
+        next(error);
+      });
+  }
+
+  else if (request.query.filter) {
+    const queryArray = ((request.query.filter) as string).split(':');
+    Patient.find({}).where(queryArray[0]).equals(queryArray[1]).then(data => {
+      response.status(200).json(data);
+    })
+      .catch(error => {
+        next(error);
+      });
+  }
+  
+  else {
+    Patient.find({})
+      .then(data => {
+        response.status(200).json(data);
+      })
+      .catch(error => {
+        next(error);
+      });
+  }
 };
 
 export const createPatient: RequestHandler = (request, response, next) => {

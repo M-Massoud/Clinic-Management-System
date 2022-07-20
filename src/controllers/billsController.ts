@@ -2,13 +2,46 @@ import { RequestHandler } from "express";
 import Bill from "../models/billsModel";
 
 export const getAllBills: RequestHandler = (request, response, next) => {
-  Bill.find({})
-    .then(data => {
+
+  if (request.query.sort) {
+    Bill.find({}).sort((request.query.sort as string)).then(data => {
       response.status(200).json(data);
     })
-    .catch(error => {
-      next(error);
-    });
+      .catch(error => {
+        next(error);
+      });
+  }
+
+  else if (request.query.filterByValue) {
+    const queryArray = ((request.query.filterByValue) as string).split(':');
+    Bill.find({}).where(queryArray[0]).equals(queryArray[1]).then(data => {
+      response.status(200).json(data);
+    })
+      .catch(error => {
+        next(error);
+      });
+  }
+
+  else if (request.query.FilterByRange) {
+    let filterQueryString: string = JSON.stringify(request.query.FilterByRange);
+    filterQueryString = filterQueryString.replace(/\b(gte|gt|lte|lt)\b/g, (match: string) => `$${match}`);
+    Bill.find(JSON.parse(filterQueryString)).then(data => {
+      response.status(200).json(data);
+    })
+      .catch(error => {
+        next(error);
+      });
+  }
+
+  else {
+    Bill.find({})
+      .then(data => {
+        response.status(200).json(data);
+      })
+      .catch(error => {
+        next(error);
+      });
+  }
 };
 
 export const createBill: RequestHandler = (request, response, next) => {
