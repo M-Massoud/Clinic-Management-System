@@ -77,7 +77,7 @@ router
         .isIn(['dentistry', 'general', 'nutrition', 'psychiatry'])
         .withMessage('invalid clinic speciality please choose one from (dentistry,general, nutrition, psychiatry)'),
 ], validationMW_1.default, clinicController.createNewClinic)
-    .put(authMW_1.default, checkAutherizationMW_1.default, [
+    .put(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), [
     (0, express_validator_1.body)('name')
         .optional()
         .isString()

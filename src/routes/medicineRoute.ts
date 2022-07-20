@@ -10,7 +10,7 @@ router
   .route('/medicine')
   .get(
     authMW,
-    checkAutherizationMW(['admin']),
+    checkAutherizationMW(['admin', 'doctor']),
     medicineController.getAllMedicines
   )
   .post(
@@ -30,7 +30,7 @@ router
   )
   .put(
     authMW,
-    checkAutherizationMW(['admin']),
+    checkAutherizationMW(['admin', 'doctor']),
     [
       body('title')
         .optional()
@@ -51,7 +51,15 @@ router
 
 router
   .route('/medicine/:id')
-  .get(medicineController.getMedicineById)
-  .delete(authMW, checkAutherizationMW, medicineController.deleteMedicine);
+  .get(
+    authMW,
+    checkAutherizationMW(['admin', 'doctor']),
+    medicineController.getMedicineById
+  )
+  .delete(
+    authMW,
+    checkAutherizationMW(['admin', 'doctor']),
+    medicineController.deleteMedicine
+  );
 
 export default router;
