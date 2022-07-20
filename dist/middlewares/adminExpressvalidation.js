@@ -14,7 +14,7 @@ exports.validationArry = [
         .isEmail()
         .withMessage('admin email shoud be like example@email.com'),
     body("mobile").isMobilePhone('ar-EG').withMessage("Employe mobile should be mobile numbers").isLength({ min: 10, max: 14, }).withMessage("mobile length should be between 10 and 14  numbers"),
-    body('role')
+    body('role').optional()
         .isAlpha()
         .withMessage('admin role shoud be characters'),
 ];

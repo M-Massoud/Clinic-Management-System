@@ -20,7 +20,7 @@ exports.validationArry = [
     check('address.building').isNumeric().withMessage("building number should be number"),
     (0, express_validator_1.body)("mobile").isMobilePhone('ar-EG').withMessage("Employe mobile should be mobile numbers").isLength({ min: 10, max: 14, }).withMessage("mobile length should be between 10 and 14  numbers"),
     (0, express_validator_1.body)("salary").isNumeric().withMessage("Employe salary should be Number..!"),
-    (0, express_validator_1.body)('role')
+    (0, express_validator_1.body)('role').optional()
         .isAlpha()
         .withMessage('Employe role shoud be characters'),
 ];

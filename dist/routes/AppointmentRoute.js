@@ -7,12 +7,13 @@ const express_1 = __importDefault(require("express"));
 const express_validator_1 = require("express-validator");
 const AppointmentController_1 = require("../controllers/AppointmentController");
 const validationMW_1 = __importDefault(require("../middlewares/validationMW"));
-console.log("hhhhh");
+const authMW_1 = __importDefault(require("../middlewares/authMW"));
+const checkAutherizationMW_1 = __importDefault(require("../middlewares/checkAutherizationMW"));
 const router = express_1.default.Router();
 router
     .route("/appointment")
-    .get(AppointmentController_1.getAllAppointments)
-    .post([
+    .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), AppointmentController_1.getAllAppointments)
+    .post(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'employee', 'doctor']), [
     (0, express_validator_1.body)("doctorName")
         .isString()
         .withMessage("doctor  Name shoud be characters"),
@@ -24,7 +25,7 @@ router
         .isDate()
         .withMessage("Appointment date should be at date format"),
 ], validationMW_1.default, AppointmentController_1.createAppointment)
-    .put([
+    .put(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'employee']), [
     (0, express_validator_1.body)("doctorName")
         .isString()
         .withMessage("doctor  Name shoud be characters"),
@@ -39,7 +40,7 @@ router
 router
     .route("/appointment/:id")
     // get a specific doctor
-    .get([(0, express_validator_1.param)("id").isNumeric().withMessage("Appointment id should be number")], validationMW_1.default, AppointmentController_1.getAppointmentById)
+    .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'employee', 'doctor']), [(0, express_validator_1.param)("id").isNumeric().withMessage("Appointment id should be number")], validationMW_1.default, AppointmentController_1.getAppointmentById)
     // delete doctor
-    .delete([(0, express_validator_1.param)("id").isNumeric().withMessage("Appointment id isn't valid id")], validationMW_1.default, AppointmentController_1.deleteAppointment);
+    .delete(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'employee']), [(0, express_validator_1.param)("id").isNumeric().withMessage("Appointment id isn't valid id")], validationMW_1.default, AppointmentController_1.deleteAppointment);
 exports.default = router;

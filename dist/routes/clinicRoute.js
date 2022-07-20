@@ -31,10 +31,12 @@ const router = express_1.default.Router();
 const express_validator_1 = require("express-validator");
 const clinicController = __importStar(require("../controllers/clinicController"));
 const validationMW_1 = __importDefault(require("../middlewares/validationMW"));
+const authMW_1 = __importDefault(require("../middlewares/authMW"));
+const checkAutherizationMW_1 = __importDefault(require("../middlewares/checkAutherizationMW"));
 router
     .route('/clinic')
-    .get(clinicController.getAllClinics)
-    .post([
+    .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), clinicController.getAllClinics)
+    .post(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), [
     (0, express_validator_1.body)('name').isString().withMessage('clinic name should be a string'),
     (0, express_validator_1.body)('mobile')
         .isNumeric()
@@ -59,7 +61,7 @@ router
         .isArray()
         .withMessage('clinic medicines must be array of ids'),
 ], validationMW_1.default, clinicController.createNewClinic)
-    .put([
+    .put(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), [
     (0, express_validator_1.body)('name')
         .optional()
         .isString()
@@ -92,6 +94,6 @@ router
 ], validationMW_1.default, clinicController.updateClinic);
 router
     .route('/clinic/:id')
-    .get(clinicController.getClinicById)
-    .delete(clinicController.deleteClinic);
+    .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), clinicController.getClinicById)
+    .delete(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), clinicController.deleteClinic);
 exports.default = router;

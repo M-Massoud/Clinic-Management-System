@@ -1,17 +1,17 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { body, param } from "express-validator";
 import { check } from "express-validator";
 import * as controller from "../controllers/patientController";
 import validationMW from "../middlewares/validationMW";
 import authMW from "../middlewares/authMW";
-import autherizationMW from "../middlewares/checkAutherizationMW";
+import checkAutherizationMW from "../middlewares/checkAutherizationMW";
 
-const router = express.Router();
+const router:Router = express.Router();
 
 router.route("/patient")
-    .get(authMW, autherizationMW(['admin']), controller.getAllPatients)
+    .get(authMW, checkAutherizationMW(['admin']), controller.getAllPatients)
 
-    .post(authMW, autherizationMW(['admin', 'employee']), [
+    .post(authMW, checkAutherizationMW(['admin', 'employee']), [
         body("fullName").isString().withMessage("patient full name should be string"),
         body("email").isEmail().withMessage("patient email should be like example@email.com"),
         body("password").isStrongPassword().withMessage('patient Password shoud be at least 8 characters, with upper case,lower case, special character and numbers'),
@@ -39,7 +39,7 @@ router.route("/patient")
     ],
         validationMW,
         controller.createPatient)
-    .put(authMW, autherizationMW(['admin', 'employee']), [
+    .put(authMW, checkAutherizationMW(['admin', 'employee']), [
         body("id").isNumeric().withMessage("patient id should be number"),
         body("fullName").optional().isString().withMessage("patient full name should be string"),
         body("email").optional().isEmail().withMessage("patient email should be like example@email.com"),
@@ -68,19 +68,14 @@ router.route("/patient")
     ],
         validationMW,
         controller.updatePatient)
-// .delete(adminAuthorizationMW, [
-//     body("id").isNumeric().withMessage("patient id should be number"),
-// ],
-//     validationMW,
-//     controller.deletepatient)
 
 router.route("/patient/:id")
-    .get(authMW, autherizationMW(['admin', 'employee', 'patient']), [
+    .get(authMW, checkAutherizationMW(['admin', 'employee', 'patient-byId']), [
         param("id").isNumeric().withMessage("patient id should be number"),
     ],
         validationMW,
         controller.getPatientById)
-    .put([
+    .put(authMW, checkAutherizationMW(['admin', 'employee', 'patient-byId']), [
         param("id").isNumeric().withMessage("patient id should be number"),
         body("fullName").optional().isString().withMessage("patient full name should be string"),
         body("email").optional().isEmail().withMessage("patient email should be like example@email.com"),
@@ -109,19 +104,19 @@ router.route("/patient/:id")
     ],
         validationMW,
         controller.updatePatientProfile)
-    .delete([
+    .delete(authMW, checkAutherizationMW(['admin', 'employee', 'patient']), [
         param("id").isNumeric().withMessage("patient id should be number"),
     ],
         validationMW,
         controller.deletePatientById)
 
 router.route("/patient/:id/appointments")
-    .get([
+    .get(authMW, checkAutherizationMW(['admin', 'employee', 'patient-byId']), [
         param("id").isNumeric().withMessage("patient id should be number"),
     ],
         validationMW,
         controller.getPatientAppointmentsByPatientId)
-    .delete([
+    .delete(authMW, checkAutherizationMW(['admin', 'employee', 'patient-byId']), [
         param("id").isNumeric().withMessage("patient id should be numbers"),
         //@ts-ignore
         body("appointments").isArray({ type: Number }).withMessage("patient appointments should be array of appointments id"),
@@ -130,12 +125,12 @@ router.route("/patient/:id/appointments")
         controller.deletePatientAppointmentsByPatientId)
 
 router.route("/patient/:id/bills")
-    .get([
+    .get(authMW, checkAutherizationMW(['admin', 'employee', 'patient-byId']), [
         param("id").isNumeric().withMessage("patient id should be number"),
     ],
         validationMW,
         controller.getPatientBillsByPatientId)
-    .delete([
+    .delete(authMW, checkAutherizationMW(['admin', 'employee', 'patient-byId']), [
         param("id").isNumeric().withMessage("patient id should be numbers"),
         //@ts-ignore
         body("bills").isArray({ type: Number }).withMessage("patient bills should be array of patient bill id"),

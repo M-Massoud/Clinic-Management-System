@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import mongoose from "mongoose";
 const AutoIncrement = require("mongoose-sequence")(mongoose);
-export interface Doctor {
+export interface IDoctor {
   _id: Number;
   fullName: String;
   mobile: Number;
@@ -13,7 +13,7 @@ export interface Doctor {
   salary?: Number;
 }
 
-const doctorSchema = new Schema<Doctor>(
+const doctorSchema = new Schema<IDoctor>(
   {
     _id: { type: Number },
     fullName: { type: String, required: true },
@@ -24,12 +24,12 @@ const doctorSchema = new Schema<Doctor>(
       type: [{ type: Number }],
       ref: "appointments"
     },
-    role: { type: String },
+    role: { type: String,default:'doctor' },
     salary: { type: Number },
     address: { city: String, street: String, building: Number },
   },
   { id: false }
 );
 doctorSchema.plugin(AutoIncrement, { id: "doctor_id" });
-const Doctor = model<Doctor>("doctor", doctorSchema);
+const Doctor = model<IDoctor>("doctor", doctorSchema);
 export default Doctor;

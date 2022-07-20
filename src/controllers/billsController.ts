@@ -1,8 +1,5 @@
 import { RequestHandler } from "express";
 import Bill from "../models/billsModel";
-import bcrypt from "bcrypt";
-//@ts-ignore
-const salt: string = bcrypt.genSaltSync(+process.env.saltRounds);
 
 export const getAllBills: RequestHandler = (request, response, next) => {
   Bill.find({})

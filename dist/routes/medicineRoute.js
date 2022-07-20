@@ -31,10 +31,12 @@ const router = express_1.default.Router();
 const medicineController = __importStar(require("../controllers/medicineController"));
 const express_validator_1 = require("express-validator");
 const validationMW_1 = __importDefault(require("../middlewares/validationMW"));
+const authMW_1 = __importDefault(require("../middlewares/authMW"));
+const checkAutherizationMW_1 = __importDefault(require("../middlewares/checkAutherizationMW"));
 router
     .route('/medicine')
-    .get(medicineController.getAllMedicines)
-    .post([
+    .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), medicineController.getAllMedicines)
+    .post(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), [
     (0, express_validator_1.body)('title').isString().withMessage('medicine title should be a string'),
     (0, express_validator_1.body)('price')
         .isNumeric()
@@ -43,7 +45,7 @@ router
         .isString()
         .withMessage('medicine description must be a string'),
 ], validationMW_1.default, medicineController.addNewMedicine)
-    .put([
+    .put(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), [
     (0, express_validator_1.body)('title')
         .optional()
         .isString()
@@ -59,6 +61,6 @@ router
 ], validationMW_1.default, medicineController.updateMedicine);
 router
     .route('/medicine/:id')
-    .get(medicineController.getMedicineById)
-    .delete(medicineController.deleteMedicine);
+    .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), medicineController.getMedicineById)
+    .delete(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), medicineController.deleteMedicine);
 exports.default = router;

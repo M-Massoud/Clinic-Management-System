@@ -3,11 +3,13 @@ const router = express.Router();
 import * as medicineController from '../controllers/medicineController';
 import { body } from 'express-validator';
 import validationMW from '../middlewares/validationMW';
+import authMW from "../middlewares/authMW";
+import checkAutherizationMW from "../middlewares/checkAutherizationMW";
 
 router
   .route('/medicine')
-  .get(medicineController.getAllMedicines)
-  .post(
+  .get(authMW, checkAutherizationMW(['admin']),medicineController.getAllMedicines)
+  .post(authMW, checkAutherizationMW(['admin']),
     [
       body('title').isString().withMessage('medicine title should be a string'),
       body('price')
@@ -20,7 +22,7 @@ router
     validationMW,
     medicineController.addNewMedicine
   )
-  .put(
+  .put(authMW, checkAutherizationMW(['admin']),
     [
       body('title')
         .optional()
@@ -41,7 +43,7 @@ router
 
 router
   .route('/medicine/:id')
-  .get(medicineController.getMedicineById)
-  .delete(medicineController.deleteMedicine);
+  .get(authMW, checkAutherizationMW(['admin']),medicineController.getMedicineById)
+  .delete(authMW, checkAutherizationMW(['admin']),medicineController.deleteMedicine);
 
 export default router;

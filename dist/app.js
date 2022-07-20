@@ -20,6 +20,8 @@ const employRoute_1 = __importDefault(require("./routes/employRoute"));
 const patientRoute_1 = __importDefault(require("./routes/patientRoute"));
 const billsRoute_1 = __importDefault(require("./routes/billsRoute"));
 const loginRoute_1 = __importDefault(require("./routes/loginRoute"));
+const forgotPasswordRoute_1 = __importDefault(require("./routes/forgotPasswordRoute"));
+const changePasswordRoute_1 = __importDefault(require("./routes/changePasswordRoute"));
 const server = (0, express_1.default)();
 const port = 8080;
 mongoose_1.default
@@ -38,6 +40,7 @@ server.use((0, morgan_1.default)(':method :url'));
 server.use((0, cors_1.default)());
 // routes
 server.use(express_1.default.json());
+server.use(forgotPasswordRoute_1.default);
 server.use(clinicRoute_1.default);
 server.use(medicineRoute_1.default);
 server.use(DoctorRoute_1.default);
@@ -48,6 +51,7 @@ server.use(employRoute_1.default);
 server.use(loginRoute_1.default);
 server.use(patientRoute_1.default);
 server.use(billsRoute_1.default);
+server.use(changePasswordRoute_1.default);
 // c- General middleware for not Found url pathes with 404 status code.
 server.use((request, response) => {
     response.status(404).send('Page Not Found');

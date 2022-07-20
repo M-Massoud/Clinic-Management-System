@@ -43,7 +43,7 @@ const employeSchema = new Schema<Employee>({
     },
     mobile:Number,
     salary: Number,
-    role: String,  
+    role: {type : String, default:'employee'},  
   });
   employeSchema.plugin(AutoIncrement, {id: 'employe_id_counter',inc_field: '_id' });
 // 3. Create a Model.
