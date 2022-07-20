@@ -7,6 +7,8 @@ export interface Appointment {
   date: Date;
   doctorName: String;
   patientName: String;
+  createdAt: Date;
+  isScaned: Boolean;
 }
 
 const appointmentSchema = new Schema<Appointment>(
@@ -16,8 +18,10 @@ const appointmentSchema = new Schema<Appointment>(
       type: Date,
       default: Date.now,
     },
-    doctorName: { type: String, required: true },
-    patientName: { type: String, required: true },
+    doctorName: { type: String, required:[true, 'doctor name is required!'] },
+    patientName: { type: String, required: [true, 'patient name is required!'] },
+    createdAt: { type: Date, default: new Date},
+    isScaned: { type: Boolean, default: false },
   },
   { id: false }
 );

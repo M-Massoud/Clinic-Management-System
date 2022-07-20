@@ -12,8 +12,10 @@ const appointmentSchema = new mongoose_1.Schema({
         type: Date,
         default: Date.now,
     },
-    doctorName: { type: String, required: true },
-    patientName: { type: String, required: true },
+    doctorName: { type: String, required: [true, 'doctor name is required!'] },
+    patientName: { type: String, required: [true, 'patient name is required!'] },
+    createdAt: { type: Date, default: new Date },
+    isScaned: { type: Boolean, default: false },
 }, { id: false });
 appointmentSchema.plugin(AutoIncrement, { id: "appointment_id" });
 const appointment = (0, mongoose_1.model)("appointments", appointmentSchema);

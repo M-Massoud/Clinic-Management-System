@@ -94,7 +94,7 @@ export const deleteDoctor: RequestHandler = (request, response, next) => {
 export const deleteDoctorAppointmentById : RequestHandler =  (request, response, next) => {
   Doctor.updateOne(
     { _id: request.params.id },
-    { $pull: { Appointment: { $in: request.body.Appointment } } }
+    { $pull: { Appointment: { $in: (request.body as { Appointment: [] }).Appointment } } }
   )
     .then(data => {
       if (data == null) {
@@ -106,3 +106,43 @@ export const deleteDoctorAppointmentById : RequestHandler =  (request, response,
     .catch(error => {
       next(error);
     })}
+ // highsalary
+ export const sortHighSalaryDoctors: RequestHandler = (request, response, next) => {
+  Doctor.find({},{fullName:1,salary:1,email:1,mobile:1,address:1}).sort({salary:-1})
+    .then((data) => {
+      response.status(200).json(data);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+//lowsalary
+export const sortLowSalaryDoctors: RequestHandler = (request, response, next) => {
+  Doctor.find({},{fullName:1,salary:1,email:1,mobile:1,address:1}).sort({salary:1})
+    .then((data) => {
+      response.status(200).json(data);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+//less than salary
+export const lessSalaryDoctors: RequestHandler = (request, response, next) => {
+  Doctor.find({salary:{$lt:request.params.key}},{password:0,role:0,Appointment:0})
+    .then((data) => {
+      response.status(200).json(data);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+// highs than alary
+export const highSalaryDoctors: RequestHandler = (request, response, next) => {
+  Doctor.find({salary:{$gt:request.params.key}},{password:0,role:0,Appointment:0})
+    .then((data) => {
+      response.status(200).json(data);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};    

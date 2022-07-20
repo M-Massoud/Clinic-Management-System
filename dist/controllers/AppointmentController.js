@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAppointment = exports.updateAppointment = exports.createAppointment = exports.getAppointmentById = exports.getAllAppointments = void 0;
+exports.sortOldDateAppointments = exports.sortNewDateAppointments = exports.Scanned = exports.notScanned = exports.deleteAppointment = exports.updateAppointment = exports.createAppointment = exports.getAppointmentById = exports.getAllAppointments = void 0;
 const AppointmentModel_1 = __importDefault(require("../models/AppointmentModel"));
 const getAllAppointments = (request, response, next) => {
     AppointmentModel_1.default
@@ -44,7 +44,9 @@ const createAppointment = (request, response, next) => {
     let object = new AppointmentModel_1.default({
         doctorName: request.body.doctorName,
         patientName: request.body.patientName,
-        date: request.body.date
+        date: request.body.date,
+        createdAt: request.body.createdAt,
+        isScaned: request.body.isScaned
     });
     object
         .save()
@@ -88,3 +90,49 @@ const deleteAppointment = (request, response, next) => {
     });
 };
 exports.deleteAppointment = deleteAppointment;
+//filter not Scanned
+const notScanned = (request, response, next) => {
+    AppointmentModel_1.default
+        .find({}, { createdAt: 0 }).where('isScaned').equals(request.query.false)
+        .then((data) => {
+        response.status(200).json(data);
+    })
+        .catch((error) => {
+        next(error);
+    });
+};
+exports.notScanned = notScanned;
+//filter  Scanned 
+const Scanned = (request, response, next) => {
+    AppointmentModel_1.default
+        .find({ isScaned: true }, { createdAt: 0 })
+        .then((data) => {
+        response.status(200).json(data);
+    })
+        .catch((error) => {
+        next(error);
+    });
+};
+exports.Scanned = Scanned;
+//sort from  new to old 
+const sortNewDateAppointments = (request, response, next) => {
+    AppointmentModel_1.default.find({}).sort({ createdAt: -1 })
+        .then((data) => {
+        response.status(200).json(data);
+    })
+        .catch((error) => {
+        next(error);
+    });
+};
+exports.sortNewDateAppointments = sortNewDateAppointments;
+//sort from old to new
+const sortOldDateAppointments = (request, response, next) => {
+    AppointmentModel_1.default.find({}).sort({ createdAt: 1 })
+        .then((data) => {
+        response.status(200).json(data);
+    })
+        .catch((error) => {
+        next(error);
+    });
+};
+exports.sortOldDateAppointments = sortOldDateAppointments;

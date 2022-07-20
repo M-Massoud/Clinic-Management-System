@@ -8,6 +8,10 @@ import {
   updateDoctor,
   deleteDoctor,
   deleteDoctorAppointmentById,
+  sortLowSalaryDoctors,
+  sortHighSalaryDoctors,
+  highSalaryDoctors,
+  lessSalaryDoctors,
 } from '../controllers/DoctorController';
 import validationMW from '../middlewares/validationMW';
 import authMW from '../middlewares/authMW';
@@ -36,13 +40,13 @@ router
         .withMessage(
           'Doctor Password shoud be at least 8 characters, with upper case,lower case, special character and numbers'
         ),
-      // body('mobile')
-      //   .isMobilePhone('ar-EG')
-      //   .withMessage('Doctor mobile should be valid mobile number')
-      //   .isLength({ min: 10, max: 14 })
-      //   .withMessage(
-      //     'Doctor mobile length should be between 10 and 14  numbers'
-      //   ),
+      body('mobile')
+        .isMobilePhone('ar-EG')
+        .withMessage('Doctor mobile should be valid mobile number')
+        .isLength({ min: 10, max: 14 })
+        .withMessage(
+          'Doctor mobile length should be between 10 and 14  numbers'
+        ),
       body('address')
         .optional()
         .isObject()
@@ -81,12 +85,15 @@ router
     [
       body('fullName')
         .isString()
+        .optional()
         .withMessage('Doctor full Name shoud be characters'),
       body('email')
         .isEmail()
+        .optional()
         .withMessage('Doctor email shoud be like example@email.com'),
       body('password')
         .isStrongPassword()
+        .optional()
         .withMessage(
           'Doctor Password shoud be at least 8 characters, with upper case,lower case, special character and numbers'
         ),
@@ -94,6 +101,7 @@ router
         .isMobilePhone('ar-EG')
         .withMessage('Doctor mobile should be mobile numbers')
         .isLength({ min: 10, max: 14 })
+        .optional()
         .withMessage(
           'Doctor mobile length should be between 10 and 14  numbers'
         ),
@@ -120,6 +128,7 @@ router
         .withMessage('Appointment should be number'),
       body('salary')
         .isNumeric()
+        .optional()
         .withMessage('Doctor salary stock should be number'),
     ],
     validationMW,
@@ -155,4 +164,10 @@ router
     validationMW,
     deleteDoctorAppointmentById
   );
+  //sort salary
+router.route("/lowsalary").get(sortLowSalaryDoctors);
+router.route("/highsalary").get(sortHighSalaryDoctors);
+//filter salary
+router.route("/highSalary/:key").get(highSalaryDoctors);
+router.route("/lessSalary/:key").get(lessSalaryDoctors);
 export default router;
