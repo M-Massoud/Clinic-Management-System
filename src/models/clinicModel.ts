@@ -11,10 +11,12 @@ interface ClinicInterface {
     street: string;
     building: number;
   };
+  speciality: string;
   doctors: number[];
-  medicine: number[];
+  medicines: number[];
   employees: number[];
-  report: number[];
+  reports: number[];
+  patients: number[];
 }
 
 // 2. Create a Schema corresponding to the document interface.
@@ -32,9 +34,32 @@ const clinicSchema = new Schema<ClinicInterface>({
     street: String,
     building: Number,
   },
-  medicine: {
+
+  speciality: {
+    type: String,
+    enum: ['dentistry', 'general', 'nutrition', 'psychiatry'],
+    default: 'general',
+  },
+
+  medicines: {
     type: [Number],
     ref: 'medicines',
+  },
+  doctors: {
+    type: [Number],
+    ref: 'doctor',
+  },
+  reports: {
+    type: [Number],
+    ref: 'Report',
+  },
+  employees: {
+    type: [Number],
+    ref: 'Employee',
+  },
+  patients: {
+    type: [Number],
+    ref: 'patients',
   },
 });
 

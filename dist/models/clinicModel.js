@@ -39,9 +39,30 @@ const clinicSchema = new mongoose_1.Schema({
         street: String,
         building: Number,
     },
-    medicine: {
+    speciality: {
+        type: String,
+        enum: ['dentistry', 'general', 'nutrition', 'psychiatry'],
+        default: 'general',
+    },
+    medicines: {
         type: [Number],
         ref: 'medicines',
+    },
+    doctors: {
+        type: [Number],
+        ref: 'doctor',
+    },
+    reports: {
+        type: [Number],
+        ref: 'Report',
+    },
+    employees: {
+        type: [Number],
+        ref: 'Employee',
+    },
+    patients: {
+        type: [Number],
+        ref: 'patients',
     },
 });
 exports.default = mongoose_1.default.model('clinics', clinicSchema);

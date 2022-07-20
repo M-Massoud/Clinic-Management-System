@@ -35,7 +35,7 @@ const authMW_1 = __importDefault(require("../middlewares/authMW"));
 const checkAutherizationMW_1 = __importDefault(require("../middlewares/checkAutherizationMW"));
 router
     .route('/clinic')
-    .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), clinicController.getAllClinics)
+    .get(clinicController.getAllClinics)
     .post(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), [
     (0, express_validator_1.body)('name').isString().withMessage('clinic name should be a string'),
     (0, express_validator_1.body)('mobile')
@@ -57,20 +57,39 @@ router
     (0, express_validator_1.body)('address.building')
         .isNumeric()
         .withMessage('address building must be a number'),
-    (0, express_validator_1.body)('medicine')
+    (0, express_validator_1.body)('medicines')
         .isArray()
         .withMessage('clinic medicines must be array of ids'),
+    (0, express_validator_1.body)('doctors')
+        .isArray()
+        .withMessage('clinic doctors must be array of ids'),
+    (0, express_validator_1.body)('patients')
+        .isArray()
+        .withMessage('clinic patients must be array of ids'),
+    (0, express_validator_1.body)('employees')
+        .isArray()
+        .withMessage('clinic employees must be array of ids'),
+    (0, express_validator_1.body)('reports')
+        .isArray()
+        .withMessage('clinic reports must be array of ids'),
+    (0, express_validator_1.body)('speciality')
+        .optional()
+        .isIn(['dentistry', 'general', 'nutrition', 'psychiatry'])
+        .withMessage('invalid clinic speciality please choose one from (dentistry,general, nutrition, psychiatry)'),
 ], validationMW_1.default, clinicController.createNewClinic)
-    .put(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), [
+    .put(authMW_1.default, checkAutherizationMW_1.default, [
     (0, express_validator_1.body)('name')
         .optional()
         .isString()
-        .withMessage('clinic name should be a string'),
+        .withMessage('clinic name should be a valid name'),
     (0, express_validator_1.body)('mobile')
         .optional()
         .isNumeric()
         .withMessage('clinic number must be all numbers'),
-    (0, express_validator_1.body)('email').isEmail().withMessage('clinic email must be a valid email'),
+    (0, express_validator_1.body)('email')
+        .optional()
+        .isEmail()
+        .withMessage('clinic email must be a valid email'),
     (0, express_validator_1.body)('password')
         .optional()
         .isStrongPassword()
@@ -91,6 +110,30 @@ router
         .optional()
         .isNumeric()
         .withMessage('address building must be a number'),
+    (0, express_validator_1.body)('medicines')
+        .optional()
+        .isArray()
+        .withMessage('clinic medicines must be array of ids'),
+    (0, express_validator_1.body)('doctors')
+        .optional()
+        .isArray()
+        .withMessage('clinic doctors must be array of ids'),
+    (0, express_validator_1.body)('patients')
+        .optional()
+        .isArray()
+        .withMessage('clinic patients must be array of ids'),
+    (0, express_validator_1.body)('employees')
+        .optional()
+        .isArray()
+        .withMessage('clinic employees must be array of ids'),
+    (0, express_validator_1.body)('reports')
+        .optional()
+        .isArray()
+        .withMessage('clinic reports must be array of ids'),
+    (0, express_validator_1.body)('speciality')
+        .optional()
+        .isIn(['dentistry', 'general', 'nutrition', 'psychiatry'])
+        .withMessage('invalid clinic speciality please choose one from (dentistry,general, nutrition, psychiatry)'),
 ], validationMW_1.default, clinicController.updateClinic);
 router
     .route('/clinic/:id')

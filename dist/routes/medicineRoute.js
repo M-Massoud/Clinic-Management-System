@@ -61,6 +61,6 @@ router
 ], validationMW_1.default, medicineController.updateMedicine);
 router
     .route('/medicine/:id')
-    .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), medicineController.getMedicineById)
-    .delete(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), medicineController.deleteMedicine);
+    .get(medicineController.getMedicineById)
+    .delete(authMW_1.default, checkAutherizationMW_1.default, medicineController.deleteMedicine);
 exports.default = router;

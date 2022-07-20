@@ -3,13 +3,19 @@ const router = express.Router();
 import * as medicineController from '../controllers/medicineController';
 import { body } from 'express-validator';
 import validationMW from '../middlewares/validationMW';
-import authMW from "../middlewares/authMW";
-import checkAutherizationMW from "../middlewares/checkAutherizationMW";
+import authMW from '../middlewares/authMW';
+import checkAutherizationMW from '../middlewares/checkAutherizationMW';
 
 router
   .route('/medicine')
-  .get(authMW, checkAutherizationMW(['admin']),medicineController.getAllMedicines)
-  .post(authMW, checkAutherizationMW(['admin']),
+  .get(
+    authMW,
+    checkAutherizationMW(['admin']),
+    medicineController.getAllMedicines
+  )
+  .post(
+    authMW,
+    checkAutherizationMW(['admin']),
     [
       body('title').isString().withMessage('medicine title should be a string'),
       body('price')
@@ -22,7 +28,9 @@ router
     validationMW,
     medicineController.addNewMedicine
   )
-  .put(authMW, checkAutherizationMW(['admin']),
+  .put(
+    authMW,
+    checkAutherizationMW(['admin']),
     [
       body('title')
         .optional()
@@ -43,7 +51,7 @@ router
 
 router
   .route('/medicine/:id')
-  .get(authMW, checkAutherizationMW(['admin']),medicineController.getMedicineById)
-  .delete(authMW, checkAutherizationMW(['admin']),medicineController.deleteMedicine);
+  .get(medicineController.getMedicineById)
+  .delete(authMW, checkAutherizationMW, medicineController.deleteMedicine);
 
 export default router;
