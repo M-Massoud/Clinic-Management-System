@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import mongoose from "mongoose";
 const AutoIncrement = require("mongoose-sequence")(mongoose);
+import uniqueValidator from 'mongoose-unique-validator';
 export interface IDoctor {
   _id: Number;
   fullName: String;
@@ -16,10 +17,10 @@ export interface IDoctor {
 const doctorSchema = new Schema<IDoctor>(
   {
     _id: { type: Number },
-    fullName: { type: String, required: true },
-    mobile: { type: Number, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    fullName: { type: String, required: [true, 'doctor name is required!'],unique: true },
+    mobile: { type: Number, required: [true, 'mobile number is required!'], unique: true },
+    email: { type: String, required: [true, 'email  is required!'], unique: true },
+    password: { type: String, required: [true, 'password  is required!'] },
     Appointment: {
       type: [{ type: Number }],
       ref: "appointments"
@@ -30,6 +31,6 @@ const doctorSchema = new Schema<IDoctor>(
   },
   { id: false }
 );
-doctorSchema.plugin(AutoIncrement, { id: "doctor_id" });
+doctorSchema.plugin(uniqueValidator).plugin(AutoIncrement, { id: "doctor_id" });
 const Doctor = model<IDoctor>("doctor", doctorSchema);
 export default Doctor;

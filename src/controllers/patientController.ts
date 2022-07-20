@@ -179,7 +179,7 @@ export const deletePatientBillsByPatientId: RequestHandler = (
 ) => {
   Patient.updateOne(
     { _id: request.params.id },
-    { $pull: { bills: { $in: (request.body as { bills: number }).bills } } }
+    { $pull: { bills: { $in: (request.body as { bills: [] }).bills } } }
   )
     .then(data => {
       if (data == null) {
@@ -222,7 +222,7 @@ export const deletePatientAppointmentsByPatientId: RequestHandler = (
     {
       $pull: {
         appointments: {
-          $in: (request.body as { appointments: number }).appointments,
+          $in: (request.body as { appointments: [] }).appointments,
         },
       },
     }

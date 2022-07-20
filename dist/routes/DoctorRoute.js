@@ -25,13 +25,11 @@ router
     (0, express_validator_1.body)('password')
         .isStrongPassword()
         .withMessage('Doctor Password shoud be at least 8 characters, with upper case,lower case, special character and numbers'),
-    // body('mobile')
-    //   .isMobilePhone('ar-EG')
-    //   .withMessage('Doctor mobile should be valid mobile number')
-    //   .isLength({ min: 10, max: 14 })
-    //   .withMessage(
-    //     'Doctor mobile length should be between 10 and 14  numbers'
-    //   ),
+    (0, express_validator_1.body)('mobile')
+        .isMobilePhone('ar-EG')
+        .withMessage('Doctor mobile should be valid mobile number')
+        .isLength({ min: 10, max: 14 })
+        .withMessage('Doctor mobile length should be between 10 and 14  numbers'),
     (0, express_validator_1.body)('address')
         .optional()
         .isObject()
@@ -63,17 +61,21 @@ router
     .put(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), [
     (0, express_validator_1.body)('fullName')
         .isString()
+        .optional()
         .withMessage('Doctor full Name shoud be characters'),
     (0, express_validator_1.body)('email')
         .isEmail()
+        .optional()
         .withMessage('Doctor email shoud be like example@email.com'),
     (0, express_validator_1.body)('password')
         .isStrongPassword()
+        .optional()
         .withMessage('Doctor Password shoud be at least 8 characters, with upper case,lower case, special character and numbers'),
     (0, express_validator_1.body)('mobile')
         .isMobilePhone('ar-EG')
         .withMessage('Doctor mobile should be mobile numbers')
         .isLength({ min: 10, max: 14 })
+        .optional()
         .withMessage('Doctor mobile length should be between 10 and 14  numbers'),
     (0, express_validator_1.body)('address')
         .optional()
@@ -98,6 +100,7 @@ router
         .withMessage('Appointment should be number'),
     (0, express_validator_1.body)('salary')
         .isNumeric()
+        .optional()
         .withMessage('Doctor salary stock should be number'),
 ], validationMW_1.default, DoctorController_1.updateDoctor);
 router
@@ -111,4 +114,10 @@ router
     .delete(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'doctor-byId']), (0, express_validator_1.param)('id')
     .isNumeric()
     .withMessage('doctor id is required and should be number'), validationMW_1.default, DoctorController_1.deleteDoctorAppointmentById);
+//sort salary
+router.route("/lowsalary").get(DoctorController_1.sortLowSalaryDoctors);
+router.route("/highsalary").get(DoctorController_1.sortHighSalaryDoctors);
+//filter salary
+router.route("/highSalary/:key").get(DoctorController_1.highSalaryDoctors);
+router.route("/lessSalary/:key").get(DoctorController_1.lessSalaryDoctors);
 exports.default = router;

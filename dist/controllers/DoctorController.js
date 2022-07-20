@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteDoctorAppointmentById = exports.deleteDoctor = exports.updateDoctor = exports.createDoctor = exports.getDoctorById = exports.getAllDoctors = void 0;
+exports.highSalaryDoctors = exports.lessSalaryDoctors = exports.sortLowSalaryDoctors = exports.sortHighSalaryDoctors = exports.deleteDoctorAppointmentById = exports.deleteDoctor = exports.updateDoctor = exports.createDoctor = exports.getDoctorById = exports.getAllDoctors = void 0;
 const DoctorModel_1 = __importDefault(require("../models/DoctorModel"));
 // import { Request, Response,NextFunction } from "express";
 const bcrypt_1 = __importDefault(require("bcrypt"));
@@ -113,3 +113,47 @@ const deleteDoctorAppointmentById = (request, response, next) => {
     });
 };
 exports.deleteDoctorAppointmentById = deleteDoctorAppointmentById;
+// highsalary
+const sortHighSalaryDoctors = (request, response, next) => {
+    DoctorModel_1.default.find({}, { fullName: 1, salary: 1, email: 1, mobile: 1, address: 1 }).sort({ salary: -1 })
+        .then((data) => {
+        response.status(200).json(data);
+    })
+        .catch((error) => {
+        next(error);
+    });
+};
+exports.sortHighSalaryDoctors = sortHighSalaryDoctors;
+//lowsalary
+const sortLowSalaryDoctors = (request, response, next) => {
+    DoctorModel_1.default.find({}, { fullName: 1, salary: 1, email: 1, mobile: 1, address: 1 }).sort({ salary: 1 })
+        .then((data) => {
+        response.status(200).json(data);
+    })
+        .catch((error) => {
+        next(error);
+    });
+};
+exports.sortLowSalaryDoctors = sortLowSalaryDoctors;
+//less than salary
+const lessSalaryDoctors = (request, response, next) => {
+    DoctorModel_1.default.find({ salary: { $lt: request.params.key } }, { password: 0, role: 0, Appointment: 0 })
+        .then((data) => {
+        response.status(200).json(data);
+    })
+        .catch((error) => {
+        next(error);
+    });
+};
+exports.lessSalaryDoctors = lessSalaryDoctors;
+// highs than alary
+const highSalaryDoctors = (request, response, next) => {
+    DoctorModel_1.default.find({ salary: { $gt: request.params.key } }, { password: 0, role: 0, Appointment: 0 })
+        .then((data) => {
+        response.status(200).json(data);
+    })
+        .catch((error) => {
+        next(error);
+    });
+};
+exports.highSalaryDoctors = highSalaryDoctors;

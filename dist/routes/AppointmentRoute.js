@@ -21,21 +21,18 @@ router
         .isString()
         .withMessage('patient Name shoud be characters'),
     (0, express_validator_1.body)('date')
-        .optional()
-        .isDate()
-        .withMessage('Appointment date should be at date format'),
 ], validationMW_1.default, AppointmentController_1.createAppointment)
     .put(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'employee']), [
     (0, express_validator_1.body)('doctorName')
         .isString()
+        .optional()
         .withMessage('doctor  Name shoud be characters'),
     (0, express_validator_1.body)('patientName')
         .isString()
+        .optional()
         .withMessage('patient Name shoud be characters'),
     (0, express_validator_1.body)('data')
         .optional()
-        .isDate()
-        .withMessage('Appointment date should be at date format'),
 ], validationMW_1.default, AppointmentController_1.updateAppointment);
 router
     .route('/appointment/:id')
@@ -43,4 +40,10 @@ router
     .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'employee', 'doctor']), [(0, express_validator_1.param)('id').isNumeric().withMessage('Appointment id should be number')], validationMW_1.default, AppointmentController_1.getAppointmentById)
     // delete doctor
     .delete(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'employee']), [(0, express_validator_1.param)('id').isNumeric().withMessage("Appointment id isn't valid id")], validationMW_1.default, AppointmentController_1.deleteAppointment);
+//sort by createdAt
+router.route("/newdate").get(AppointmentController_1.sortNewDateAppointments);
+router.route("/olddate").get(AppointmentController_1.sortOldDateAppointments);
+//filter with remove createdAt
+router.route("/notscanned").get(AppointmentController_1.notScanned);
+router.route("/scanned").get(AppointmentController_1.Scanned);
 exports.default = router;

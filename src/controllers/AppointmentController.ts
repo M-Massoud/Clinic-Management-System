@@ -29,7 +29,9 @@ export const createAppointment: RequestHandler = (request, response, next) => {
         let object = new appointment({
             doctorName: (request.body as { doctorName: String }).doctorName,
             patientName: (request.body as { patientName: string }).patientName,
-            date:(request.body as { date: Date }).date
+            date:(request.body as { date: Date }).date,
+            createdAt: (request.body as { createdAt:Date}).createdAt,
+            isScaned:(request.body as { isScaned:Boolean}).isScaned
 
         });
         object
@@ -72,3 +74,45 @@ export const deleteAppointment: RequestHandler = (request, response, next) => {
       next(error);
     });
   };
+//filter not Scanned
+export const notScanned: RequestHandler = (request, response, next) => {
+  appointment
+    .find({},{createdAt:0}).where('isScaned').equals(request.query.false)
+    .then((data) => {
+      response.status(200).json(data);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+//filter  Scanned 
+export const Scanned: RequestHandler = (request, response, next) => {
+  appointment
+    .find({isScaned:true},{createdAt:0})
+    .then((data) => {
+      response.status(200).json(data);
+    })
+    .catch((error) => {
+      next(error);
+    });
+}; 
+//sort from  new to old 
+export const sortNewDateAppointments: RequestHandler = (request, response, next) => {
+  appointment.find({}).sort({createdAt:-1})
+    .then((data) => {
+      response.status(200).json(data);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+//sort from old to new
+export const sortOldDateAppointments: RequestHandler = (request, response, next) => {
+  appointment.find({}).sort({createdAt:1})
+    .then((data) => {
+      response.status(200).json(data);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};

@@ -6,6 +6,10 @@ import {
   createAppointment,
   updateAppointment,
   deleteAppointment,
+  sortOldDateAppointments,
+  sortNewDateAppointments,
+  notScanned,
+  Scanned,
 } from '../controllers/AppointmentController';
 
 import validationMW from '../middlewares/validationMW';
@@ -30,9 +34,7 @@ router
         .isString()
         .withMessage('patient Name shoud be characters'),
       body('date')
-        .optional()
-        .isDate()
-        .withMessage('Appointment date should be at date format'),
+        
     ],
     validationMW,
     createAppointment
@@ -44,14 +46,15 @@ router
     [
       body('doctorName')
         .isString()
+        .optional()
         .withMessage('doctor  Name shoud be characters'),
       body('patientName')
         .isString()
+        .optional()
         .withMessage('patient Name shoud be characters'),
       body('data')
         .optional()
-        .isDate()
-        .withMessage('Appointment date should be at date format'),
+        
     ],
     validationMW,
     updateAppointment
@@ -75,5 +78,10 @@ router
     validationMW,
     deleteAppointment
   );
-
+  //sort by createdAt
+  router.route("/newdate").get(sortNewDateAppointments);
+  router.route("/olddate").get(sortOldDateAppointments);
+  //filter with remove createdAt
+  router.route("/notscanned").get(notScanned);
+  router.route("/scanned").get(Scanned);
 export default router;
