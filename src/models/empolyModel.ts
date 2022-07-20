@@ -35,7 +35,7 @@ const addressSchema = new Schema<Address>({
 const employeSchema = new Schema<Employee>({
     _id: Number,
     fullName: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     address:{
         type:addressSchema,
