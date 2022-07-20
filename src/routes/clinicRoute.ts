@@ -66,7 +66,7 @@ router
 
   .put(
     authMW,
-    checkAutherizationMW,
+    checkAutherizationMW(['admin']),
     [
       body('name')
         .optional()
