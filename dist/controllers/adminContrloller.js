@@ -43,20 +43,20 @@ const getAdminById = (request, response, next) => {
 };
 exports.getAdminById = getAdminById;
 const createAdmin = (request, response, next) => {
-    // bcrypt.hash((request.body as {password:String}).password, function (error: any, hash: any) {
-    let object = new adminModel_1.default({
-        _id: request.body.id,
-        fullName: request.body.fullName,
-        email: request.body.email,
-        password: request.body.password,
-        mobile: request.body.mobile,
-        role: request.body.role,
+    bcrypt_1.default.hash(request.body.password, salt, function (error, hash) {
+        let object = new adminModel_1.default({
+            _id: request.body.id,
+            fullName: request.body.fullName,
+            email: request.body.email,
+            password: hash,
+            mobile: request.body.mobile,
+            role: request.body.role,
+        });
+        object.save()
+            .then((data) => {
+            response.status(201).json({ data: "Admin data added successfully" });
+        }).catch((error) => next(error));
     });
-    object.save()
-        .then((data) => {
-        response.status(201).json({ data: "Admin data added successfully" });
-    }).catch((error) => next(error));
-    //});
 };
 exports.createAdmin = createAdmin;
 const updateAdmin = (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {

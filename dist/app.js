@@ -17,6 +17,7 @@ const AppointmentRoute_1 = __importDefault(require("./routes/AppointmentRoute"))
 const adminRoute_1 = __importDefault(require("./routes/adminRoute"));
 const reportRoute_1 = __importDefault(require("./routes/reportRoute"));
 const employRoute_1 = __importDefault(require("./routes/employRoute"));
+const sortemployRoute_1 = __importDefault(require("./routes/sortemployRoute"));
 const patientRoute_1 = __importDefault(require("./routes/patientRoute"));
 const billsRoute_1 = __importDefault(require("./routes/billsRoute"));
 const loginRoute_1 = __importDefault(require("./routes/loginRoute"));
@@ -45,6 +46,7 @@ server.use(AppointmentRoute_1.default);
 server.use(adminRoute_1.default);
 server.use(reportRoute_1.default);
 server.use(employRoute_1.default);
+server.use(sortemployRoute_1.default);
 server.use(loginRoute_1.default);
 server.use(patientRoute_1.default);
 server.use(billsRoute_1.default);

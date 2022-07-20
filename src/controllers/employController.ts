@@ -29,12 +29,14 @@ export const getEmployeById:RequestHandler = (request, response, next) => {
 };
 
 export const createEmploye:RequestHandler = (request, response, next) => {
-   //bcrypt.hash((request.body as {password:String}).password, function (error: Error, hash: any) {
+    bcrypt.hash(
+        (request.body as { password: string }).password,
+        salt, function (error, hash) {
         let object = new Employe({
             _id: request.body.id,
             fullName: (request.body as {fullName:String}).fullName,
             email: (request.body as {email:String}).email,
-            password: (request.body as {password:String}).password,
+            password: hash,
             address: (request.body as {address:{city:String,street:String,building:Number}}).address,
             salary: (request.body as {salary:Number}).salary,
             mobile: (request.body as {mobile:Number}).mobile,
@@ -44,7 +46,7 @@ export const createEmploye:RequestHandler = (request, response, next) => {
             .then((data:any) => {
                 response.status(201).json({data:"Employe data added successfully"})
         }).catch((error:any)=>next(error))
-    //});
+    });
 };
 
 export const updateEmploye:RequestHandler = async (request, response, next) => {
