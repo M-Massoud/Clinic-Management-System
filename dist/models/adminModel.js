@@ -10,7 +10,7 @@ const adimSchema = new mongoose_1.Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     mobile: Number,
-    role: String,
+    role: { type: String, default: 'admin' },
 });
 // 3. Create a Model.
 const Admin = (0, mongoose_1.model)('Admin', adimSchema);

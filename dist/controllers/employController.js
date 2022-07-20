@@ -43,22 +43,22 @@ const getEmployeById = (request, response, next) => {
 };
 exports.getEmployeById = getEmployeById;
 const createEmploye = (request, response, next) => {
-    //bcrypt.hash((request.body as {password:String}).password, function (error: Error, hash: any) {
-    let object = new empolyModel_1.default({
-        _id: request.body.id,
-        fullName: request.body.fullName,
-        email: request.body.email,
-        password: request.body.password,
-        address: request.body.address,
-        salary: request.body.salary,
-        mobile: request.body.mobile,
-        role: request.body.role,
+    bcrypt_1.default.hash(request.body.password, salt, function (err, hash) {
+        let object = new empolyModel_1.default({
+            _id: request.body.id,
+            fullName: request.body.fullName,
+            email: request.body.email,
+            password: hash,
+            address: request.body.address,
+            salary: request.body.salary,
+            mobile: request.body.mobile,
+            role: request.body.role,
+        });
+        object.save()
+            .then((data) => {
+            response.status(201).json({ data: "Employe data added successfully" });
+        }).catch((error) => next(error));
     });
-    object.save()
-        .then((data) => {
-        response.status(201).json({ data: "Employe data added successfully" });
-    }).catch((error) => next(error));
-    //});
 };
 exports.createEmploye = createEmploye;
 const updateEmploye = (request, response, next) => __awaiter(void 0, void 0, void 0, function* () {

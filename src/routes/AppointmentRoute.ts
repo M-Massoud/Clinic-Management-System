@@ -9,17 +9,17 @@ import {
 } from "../controllers/AppointmentController";
 
 import validationMW from "../middlewares/validationMW";
-
-console.log("hhhhh");
+import authMW from "../middlewares/authMW";
+import checkAutherizationMW from "../middlewares/checkAutherizationMW";
 
 const router = express.Router();
 
 router
   .route("/appointment")
 
-  .get(getAllAppointments)
+  .get(authMW, checkAutherizationMW(['admin']),getAllAppointments)
 
-  .post(
+  .post(authMW, checkAutherizationMW(['admin','employee','doctor']),
     [
       body("doctorName")
         .isString()
@@ -36,7 +36,7 @@ router
     createAppointment
   )
 
-  .put(
+  .put(authMW, checkAutherizationMW(['admin','employee']),
     [
       body("doctorName")
         .isString()
@@ -56,13 +56,13 @@ router
   router
   .route("/appointment/:id")
   // get a specific doctor
-  .get(
+  .get(authMW, checkAutherizationMW(['admin','employee','doctor']),
     [param("id").isNumeric().withMessage("Appointment id should be number")],
     validationMW,
     getAppointmentById
   )
   // delete doctor
-  .delete(
+  .delete(authMW, checkAutherizationMW(['admin','employee']),
     [param("id").isNumeric().withMessage("Appointment id isn't valid id")],
     validationMW,
     deleteAppointment

@@ -1,24 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from "express-validator";
+import { ICustomError } from "../app";
 
 
 export default (request: Request, response: Response, next: NextFunction) => {
 
-    interface Error {
-        status?: number;
-    }
-
-    let result = validationResult(request);
-    if (!result.isEmpty()) {
-        //@ts-ignore
-        let message: string = result.errors.reduce((current, error) => current + error.msg + " ", "");
-        let error = new Error(message);
-        //@ts-ignore
-        error.status = 422;
-        throw error;
-    }
-    else
-        next();
+  let result = validationResult(request);
+  if (!result.isEmpty()) {
+    //@ts-ignore
+    let message: string = result.errors.reduce((current: string, error: ICustomError) => current + error.msg + " ", "");
+    let error: ICustomError = new Error(message);
+    error.status = 422;
+    throw error;
+  }
+  else
+    next();
 
 }
 

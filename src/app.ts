@@ -16,6 +16,8 @@ import employeRoute from './routes/employRoute';
 import patientRoute from "./routes/patientRoute";
 import billsRoute from "./routes/billsRoute";
 import loginRoute from "./routes/loginRoute";
+import forgotPasswordRoute from "./routes/forgotPasswordRoute";
+import changePasswordRoute from "./routes/changePasswordRoute";
 
 const server = express();
 const port: number = 8080;
@@ -38,6 +40,7 @@ server.use(cors());
 
 // routes
 server.use(express.json());
+server.use(forgotPasswordRoute);
 server.use(clinicRoutes);
 server.use(medicineRoutes);
 server.use(doctorRoutes);
@@ -48,6 +51,7 @@ server.use(employeRoute);
 server.use(loginRoute);
 server.use(patientRoute);
 server.use(billsRoute);
+server.use(changePasswordRoute);
 
 // c- General middleware for not Found url pathes with 404 status code.
 server.use((request: Request, response: Response) => {
@@ -60,7 +64,6 @@ server.use((request: Request, response: Response) => {
 });
 
 export interface ICustomError extends Error {
-  message: string;
   status?: number;
 }
 

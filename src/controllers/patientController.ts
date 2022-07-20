@@ -1,11 +1,8 @@
 import { RequestHandler } from "express";
-import mongoose from 'mongoose';
-// require('../models/patientModel');
-// let Patient = mongoose.model('patients');
 import Patient from "../models/patientModel";
 import bcrypt from "bcrypt";
-//@ts-ignore
-const salt: string = bcrypt.genSaltSync(+process.env.saltRounds);
+
+const salt: string = bcrypt.genSaltSync(Number(process.env.saltRounds as string));
 
 export const getAllPatients: RequestHandler = (request, response, next) => {
   Patient.find({})
@@ -17,10 +14,8 @@ export const getAllPatients: RequestHandler = (request, response, next) => {
     });
 };
 
-
-
 export const createPatient: RequestHandler = (request, response, next) => {
-  bcrypt.hash((request.body as { password: string }).password, salt, function (err, hash) {
+  bcrypt.hash((request.body as { password: string }).password, Number(salt), function (err, hash) {
     let object = new Patient({
       fullName: (request.body as { fullName: string }).fullName,
       email: (request.body as { email: string }).email,
@@ -162,7 +157,7 @@ export const deletePatientBillsByPatientId: RequestHandler = (request, response,
 };
 
 export const getPatientAppointmentsByPatientId: RequestHandler = (request, response, next) => {
-  Patient.find({ _id: request.params.id }, { _id: 0, appointments: 1 })
+  Patient.find({ _id: request.params.id }, { _id: 0, appointments: 1 }).populate({ path: 'appointments', select: '-_id' })
     .then(data => {
       if (data == null) {
         next(new Error('Patient appointments not found'));

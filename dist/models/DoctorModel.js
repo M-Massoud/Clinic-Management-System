@@ -16,7 +16,7 @@ const doctorSchema = new mongoose_1.Schema({
         type: [{ type: Number }],
         ref: "appointments"
     },
-    role: { type: String },
+    role: { type: String, default: 'doctor' },
     salary: { type: Number },
     address: { city: String, street: String, building: Number },
 }, { id: false });

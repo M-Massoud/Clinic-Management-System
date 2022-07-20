@@ -9,21 +9,31 @@ export interface IPatient extends Document {
     email: String,
     password: String,
     mobile: Number,
-    address?: { city: String, street: String, building: Number },
+    address?: IAddress,
     appointments?: Array<Number>,
-    potions?: Array<{ medicineId: Number, usageDescription: String }>,
-    payment?: { cardType: String, cardNumber: Number },
+    potions?: IPotions,
+    payment?: IPayment,
     bills?: Array<Number>,
     role: String,
 }
 
-// interface IAddress extends Document {
-//     city: String,
-//     street: String,
-//     building: Number,
-// }
+interface IAddress extends Document {
+    city: String,
+    street: String,
+    building: Number,
+}
 
-const addressSchema: Schema = new mongoose.Schema({
+interface IPayment extends Document {
+    cardType: String,
+    cardNumber: Number,
+}
+
+interface IPotions extends Document {
+    medicineId: Number,
+    usageDescription: String,
+}
+
+const addressSchema: Schema = new mongoose.Schema<IAddress>({
 
     _id: { required: false },
     city: {
@@ -37,7 +47,7 @@ const addressSchema: Schema = new mongoose.Schema({
     },
 });
 
-const paymentSchema: Schema = new mongoose.Schema({
+const paymentSchema: Schema = new mongoose.Schema<IPayment>({
 
     _id: { required: false },
     cardType: {
@@ -51,7 +61,7 @@ const paymentSchema: Schema = new mongoose.Schema({
     },
 });
 
-const potionsSchema: Schema = new mongoose.Schema({
+const potionsSchema: Schema = new mongoose.Schema<IPotions>({
 
     _id: { required: false },
     medicineId: {
@@ -95,7 +105,7 @@ const schema: Schema = new mongoose.Schema<IPatient>({
     },
     appointments: {
         type: [{ type: Number }],
-        // ref: "products"
+        ref: "appointments"
     },
     payment: {
         type: paymentSchema,

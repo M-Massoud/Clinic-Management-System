@@ -7,7 +7,6 @@ exports.default = (request, response, next) => {
         //@ts-ignore
         let message = result.errors.reduce((current, error) => current + error.msg + " ", "");
         let error = new Error(message);
-        //@ts-ignore
         error.status = 422;
         throw error;
     }

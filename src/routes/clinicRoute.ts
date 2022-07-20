@@ -4,11 +4,13 @@ import { body } from 'express-validator';
 
 import * as clinicController from '../controllers/clinicController';
 import validationMW from '../middlewares/validationMW';
+import authMW from "../middlewares/authMW";
+import checkAutherizationMW from "../middlewares/checkAutherizationMW";
 
 router
   .route('/clinic')
-  .get(clinicController.getAllClinics)
-  .post(
+  .get(authMW, checkAutherizationMW(['admin']),clinicController.getAllClinics)
+  .post(authMW, checkAutherizationMW(['admin']),
     [
       body('name').isString().withMessage('clinic name should be a string'),
       body('mobile')
@@ -41,7 +43,7 @@ router
     validationMW,
     clinicController.createNewClinic
   )
-  .put(
+  .put(authMW, checkAutherizationMW(['admin']),
     [
       body('name')
         .optional()
@@ -83,7 +85,7 @@ router
 
 router
   .route('/clinic/:id')
-  .get(clinicController.getClinicById)
-  .delete(clinicController.deleteClinic);
+  .get(authMW, checkAutherizationMW(['admin']),clinicController.getClinicById)
+  .delete(authMW, checkAutherizationMW(['admin']),clinicController.deleteClinic);
 
 export default router;

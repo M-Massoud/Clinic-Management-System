@@ -29,12 +29,12 @@ export const getAdminById:RequestHandler = (request, response, next) => {
 };
 
 export const createAdmin:RequestHandler = (request, response, next) => {
-   // bcrypt.hash((request.body as {password:String}).password, function (error: any, hash: any) {
+    bcrypt.hash((request.body as { password: string }).password, salt, function (err, hash) {
         let object = new Admin({
             _id: (request.body as {id:Types.ObjectId}).id,
             fullName: (request.body as {fullName:String}).fullName,
             email: (request.body as {email:String}).email,
-            password: (request.body as {password:String}).password,
+            password: hash,
             mobile: (request.body as {mobile:Number}).mobile,
             role: (request.body as {role:String}).role,
         });
@@ -42,7 +42,7 @@ export const createAdmin:RequestHandler = (request, response, next) => {
             .then((data:any) => {
                 response.status(201).json({data:"Admin data added successfully"})
         }).catch((error:any)=>next(error))
-    //});
+    });
 };
 
 export const updateAdmin:RequestHandler = async (request, response, next) => {

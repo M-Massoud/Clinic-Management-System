@@ -10,18 +10,18 @@ import {
   deleteDoctorAppointmentById,
 } from "../controllers/DoctorController";
 import validationMW from "../middlewares/validationMW";
+import authMW from "../middlewares/authMW";
+import checkAutherizationMW from "../middlewares/checkAutherizationMW";
 
 // import from "../middlewares/;
-console.log("fffffff")
-console.log("sss")
 
 const router = express.Router();
 router
   .route("/doctor")
 
-  .get(getAllDoctors)
+  .get(authMW, checkAutherizationMW(['admin']),getAllDoctors)
 
-  .post(
+  .post(authMW, checkAutherizationMW(['admin']),
      [
       body("fullName")
         .isString()
@@ -57,7 +57,7 @@ router
         .optional()
         .isNumeric()
         .withMessage("Doctor building number should be number"),
-      body("role").isString().withMessage("Doctor role should be characters"),
+      body("role").optional().isString().withMessage("Doctor role should be characters"),
       body("Appointment")
         .optional()
         .isArray()
@@ -70,7 +70,7 @@ router
     createDoctor
   )
 
-  .put(
+  .put(authMW, checkAutherizationMW(['admin']),
     [
       body("fullName")
         .isString()
@@ -122,20 +122,20 @@ router
 router
   .route("/doctor/:id")
   // get a specific doctor
-  .get(
+  .get(authMW, checkAutherizationMW(['admin','doctor-byId']),
     [param("id").isNumeric().withMessage("doctor id should be number")],
     validationMW,
     getDoctorById
   )
   // delete doctor
-  .delete(
+  .delete(authMW, checkAutherizationMW(['admin','doctor-byId']),
     [param("id").isNumeric().withMessage("doctor id isn't valid id")],
     validationMW,
     deleteDoctor
   )
   router
   .route('/deleteDoctorAppointment/:id')
-  .delete(
+  .delete(authMW, checkAutherizationMW(['admin','doctor-byId']),
     param('id')
       .isNumeric()
       .withMessage('doctor id is required and should be number'),

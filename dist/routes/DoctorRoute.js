@@ -8,14 +8,14 @@ const express_validator_1 = require("express-validator");
 const express_validator_2 = require("express-validator");
 const DoctorController_1 = require("../controllers/DoctorController");
 const validationMW_1 = __importDefault(require("../middlewares/validationMW"));
+const authMW_1 = __importDefault(require("../middlewares/authMW"));
+const checkAutherizationMW_1 = __importDefault(require("../middlewares/checkAutherizationMW"));
 // import from "../middlewares/;
-console.log("fffffff");
-console.log("sss");
 const router = express_1.default.Router();
 router
     .route("/doctor")
-    .get(DoctorController_1.getAllDoctors)
-    .post([
+    .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), DoctorController_1.getAllDoctors)
+    .post(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), [
     (0, express_validator_1.body)("fullName")
         .isString()
         .withMessage("Doctor full Name shoud be characters"),
@@ -46,7 +46,7 @@ router
         .optional()
         .isNumeric()
         .withMessage("Doctor building number should be number"),
-    (0, express_validator_1.body)("role").isString().withMessage("Doctor role should be characters"),
+    (0, express_validator_1.body)("role").optional().isString().withMessage("Doctor role should be characters"),
     (0, express_validator_1.body)("Appointment")
         .optional()
         .isArray()
@@ -55,7 +55,7 @@ router
         .isNumeric()
         .withMessage("Doctor salary stock should be number"),
 ], validationMW_1.default, DoctorController_1.createDoctor)
-    .put([
+    .put(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin']), [
     (0, express_validator_1.body)("fullName")
         .isString()
         .withMessage("Doctor full Name shoud be characters"),
@@ -98,12 +98,12 @@ router
 router
     .route("/doctor/:id")
     // get a specific doctor
-    .get([(0, express_validator_1.param)("id").isNumeric().withMessage("doctor id should be number")], validationMW_1.default, DoctorController_1.getDoctorById)
+    .get(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'doctor-byId']), [(0, express_validator_1.param)("id").isNumeric().withMessage("doctor id should be number")], validationMW_1.default, DoctorController_1.getDoctorById)
     // delete doctor
-    .delete([(0, express_validator_1.param)("id").isNumeric().withMessage("doctor id isn't valid id")], validationMW_1.default, DoctorController_1.deleteDoctor);
+    .delete(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'doctor-byId']), [(0, express_validator_1.param)("id").isNumeric().withMessage("doctor id isn't valid id")], validationMW_1.default, DoctorController_1.deleteDoctor);
 router
     .route('/deleteDoctorAppointment/:id')
-    .delete((0, express_validator_1.param)('id')
+    .delete(authMW_1.default, (0, checkAutherizationMW_1.default)(['admin', 'doctor-byId']), (0, express_validator_1.param)('id')
     .isNumeric()
     .withMessage('doctor id is required and should be number'), validationMW_1.default, DoctorController_1.deleteDoctorAppointmentById);
 exports.default = router;
