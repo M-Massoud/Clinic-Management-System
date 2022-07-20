@@ -2,19 +2,19 @@ import { Schema, model, connect, ObjectId, Types } from 'mongoose';
 
 // 1. Create an interface representing a document in MongoDB.
 export interface Admini {
-  _id: Types.ObjectId,
-  fullName: String,
-  email: String,
-  password: String,
-  mobile: Number,
-  role: String,
-};
+  _id: Types.ObjectId;
+  fullName: String;
+  email: String;
+  password: String;
+  mobile: Number;
+  role: String;
+}
 // 2. Create a Schema corresponding to the document interface.
 // mongoose.Types.ObjectId
 const adimSchema = new Schema<Admini>({
   _id: { type: Schema.Types.ObjectId, auto: true },
   fullName: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   mobile: Number,
   role: { type: String, default: 'admin' },
@@ -38,9 +38,6 @@ export default Admin;
 
 //   console.log(admin.email); // 'bill@initech.com'
 // }
-
-
-
 
 //setter
 // mongoose.model('admin', adimSchema);

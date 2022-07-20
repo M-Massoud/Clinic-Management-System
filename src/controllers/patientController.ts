@@ -1,8 +1,10 @@
-import { RequestHandler } from "express";
-import Patient from "../models/patientModel";
-import bcrypt from "bcrypt";
+import { RequestHandler } from 'express';
+import Patient from '../models/patientModel';
+import bcrypt from 'bcrypt';
 
-const salt: string = bcrypt.genSaltSync(Number(process.env.saltRounds as string));
+const salt: string = bcrypt.genSaltSync(
+  Number(process.env.saltRounds as string)
+);
 
 export const getAllPatients: RequestHandler = (request, response, next) => {
   Patient.find({})
@@ -15,31 +17,52 @@ export const getAllPatients: RequestHandler = (request, response, next) => {
 };
 
 export const createPatient: RequestHandler = (request, response, next) => {
-  bcrypt.hash((request.body as { password: string }).password, Number(salt), function (err, hash) {
-    let object = new Patient({
-      fullName: (request.body as { fullName: string }).fullName,
-      email: (request.body as { email: string }).email,
-      password: hash,
-      mobile: (request.body as { mobile: Number }).mobile,
-      address: (request.body as { address: { city: String, street: String, building: Number } }).address,
-      appointments: (request.body as { appointments: Array<Number> }).appointments,
-      potions: (request.body as { potions: Array<{ medicineId: Number, usageDescription: String }> }).potions,
-      payment: (request.body as { payment: { cardType: String, cardNumber: Number } }).payment,
-      bills: (request.body as { bills: Array<Number> }).bills,
-      role: (request.body as { role: string }).role,
-    });
-    object
-      .save()
-      .then(() => {
-        response.status(201).json({ data: 'Patient Added Successfully' });
-      })
-      .catch(error => next(error));
-  });
+  bcrypt.hash(
+    (request.body as { password: string }).password,
+    Number(salt),
+    function (err, hash) {
+      let object = new Patient({
+        fullName: (request.body as { fullName: string }).fullName,
+        email: (request.body as { email: string }).email,
+        password: hash,
+        mobile: (request.body as { mobile: Number }).mobile,
+        address: (
+          request.body as {
+            address: { city: String; street: String; building: Number };
+          }
+        ).address,
+        appointments: (request.body as { appointments: Array<Number> })
+          .appointments,
+        potions: (
+          request.body as {
+            potions: Array<{ medicineId: Number; usageDescription: String }>;
+          }
+        ).potions,
+        payment: (
+          request.body as { payment: { cardType: String; cardNumber: Number } }
+        ).payment,
+        bills: (request.body as { bills: Array<Number> }).bills,
+        role: (request.body as { role: string }).role,
+      });
+      object
+        .save()
+        .then(() => {
+          response.status(201).json({ data: 'Patient Added Successfully' });
+        })
+        .catch(error => next(error));
+    }
+  );
 };
 
-export const updatePatient: RequestHandler = async (request, response, next) => {
+export const updatePatient: RequestHandler = async (
+  request,
+  response,
+  next
+) => {
   try {
-    let data: any = await Patient.findOne({ _id: (request.body as { id: number }).id });
+    let data: any = await Patient.findOne({
+      _id: (request.body as { id: number }).id,
+    });
 
     for (let key in request.body) {
       if (key === 'password') {
@@ -70,7 +93,11 @@ export const updatePatient: RequestHandler = async (request, response, next) => 
   }
 };
 
-export const updatePatientProfile: RequestHandler = async (request, response, next) => {
+export const updatePatientProfile: RequestHandler = async (
+  request,
+  response,
+  next
+) => {
   try {
     let data: any = await Patient.findOne({ _id: request.params.id });
 
@@ -120,15 +147,21 @@ export const deletePatientById: RequestHandler = (request, response, next) => {
     .then(data => {
       if (data == null) {
         next(new Error('Patient not found'));
-      } else response.status(200).json({ data: 'Patient deleted successfully' });
+      } else
+        response.status(200).json({ data: 'Patient deleted successfully' });
     })
     .catch(error => {
       next(error);
     });
 };
 
-export const getPatientBillsByPatientId: RequestHandler = (request, response, next) => {
-  Patient.find({ _id: request.params.id }, { _id: 0, bills: 1 }).populate('bills')
+export const getPatientBillsByPatientId: RequestHandler = (
+  request,
+  response,
+  next
+) => {
+  Patient.find({ _id: request.params.id }, { _id: 0, bills: 1 })
+    .populate('bills')
     .then(data => {
       if (data == null) {
         next(new Error('Patient bill not found'));
@@ -139,7 +172,11 @@ export const getPatientBillsByPatientId: RequestHandler = (request, response, ne
     });
 };
 
-export const deletePatientBillsByPatientId: RequestHandler = (request, response, next) => {
+export const deletePatientBillsByPatientId: RequestHandler = (
+  request,
+  response,
+  next
+) => {
   Patient.updateOne(
     { _id: request.params.id },
     { $pull: { bills: { $in: (request.body as { bills: number }).bills } } }
@@ -148,7 +185,9 @@ export const deletePatientBillsByPatientId: RequestHandler = (request, response,
       if (data == null) {
         next(new Error('Patient bill not found'));
       } else {
-        response.status(200).json({ data: 'Patient bill removed successfully' });
+        response
+          .status(200)
+          .json({ data: 'Patient bill removed successfully' });
       }
     })
     .catch(error => {
@@ -156,8 +195,13 @@ export const deletePatientBillsByPatientId: RequestHandler = (request, response,
     });
 };
 
-export const getPatientAppointmentsByPatientId: RequestHandler = (request, response, next) => {
-  Patient.find({ _id: request.params.id }, { _id: 0, appointments: 1 }).populate({ path: 'appointments', select: '-_id' })
+export const getPatientAppointmentsByPatientId: RequestHandler = (
+  request,
+  response,
+  next
+) => {
+  Patient.find({ _id: request.params.id }, { _id: 0, appointments: 1 })
+    .populate({ path: 'appointments', select: '-_id' })
     .then(data => {
       if (data == null) {
         next(new Error('Patient appointments not found'));
@@ -168,16 +212,28 @@ export const getPatientAppointmentsByPatientId: RequestHandler = (request, respo
     });
 };
 
-export const deletePatientAppointmentsByPatientId: RequestHandler = (request, response, next) => {
+export const deletePatientAppointmentsByPatientId: RequestHandler = (
+  request,
+  response,
+  next
+) => {
   Patient.updateOne(
     { _id: request.params.id },
-    { $pull: { appointments: { $in: (request.body as { appointments: number }).appointments } } }
+    {
+      $pull: {
+        appointments: {
+          $in: (request.body as { appointments: number }).appointments,
+        },
+      },
+    }
   )
     .then(data => {
       if (data == null) {
         next(new Error('Patient Appointment not found'));
       } else {
-        response.status(200).json({ data: 'Patient Appointment removed successfully' });
+        response
+          .status(200)
+          .json({ data: 'Patient Appointment removed successfully' });
       }
     })
     .catch(error => {

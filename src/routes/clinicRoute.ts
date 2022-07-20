@@ -4,13 +4,15 @@ import { body } from 'express-validator';
 
 import * as clinicController from '../controllers/clinicController';
 import validationMW from '../middlewares/validationMW';
-import authMW from "../middlewares/authMW";
-import checkAutherizationMW from "../middlewares/checkAutherizationMW";
+import authMW from '../middlewares/authMW';
+import checkAutherizationMW from '../middlewares/checkAutherizationMW';
 
 router
   .route('/clinic')
-  .get(authMW, checkAutherizationMW(['admin']),clinicController.getAllClinics)
-  .post(authMW, checkAutherizationMW(['admin']),
+  .get(clinicController.getAllClinics)
+  .post(
+    authMW,
+    checkAutherizationMW(['admin']),
     [
       body('name').isString().withMessage('clinic name should be a string'),
       body('mobile')
@@ -36,24 +38,48 @@ router
       body('address.building')
         .isNumeric()
         .withMessage('address building must be a number'),
-      body('medicine')
+      body('medicines')
         .isArray()
         .withMessage('clinic medicines must be array of ids'),
+      body('doctors')
+        .isArray()
+        .withMessage('clinic doctors must be array of ids'),
+      body('patients')
+        .isArray()
+        .withMessage('clinic patients must be array of ids'),
+      body('employees')
+        .isArray()
+        .withMessage('clinic employees must be array of ids'),
+      body('reports')
+        .isArray()
+        .withMessage('clinic reports must be array of ids'),
+      body('speciality')
+        .optional()
+        .isIn(['dentistry', 'general', 'nutrition', 'psychiatry'])
+        .withMessage(
+          'invalid clinic speciality please choose one from (dentistry,general, nutrition, psychiatry)'
+        ),
     ],
     validationMW,
     clinicController.createNewClinic
   )
-  .put(authMW, checkAutherizationMW(['admin']),
+
+  .put(
+    authMW,
+    checkAutherizationMW,
     [
       body('name')
         .optional()
         .isString()
-        .withMessage('clinic name should be a string'),
+        .withMessage('clinic name should be a valid name'),
       body('mobile')
         .optional()
         .isNumeric()
         .withMessage('clinic number must be all numbers'),
-      body('email').isEmail().withMessage('clinic email must be a valid email'),
+      body('email')
+        .optional()
+        .isEmail()
+        .withMessage('clinic email must be a valid email'),
       body('password')
         .optional()
         .isStrongPassword()
@@ -78,6 +104,32 @@ router
         .optional()
         .isNumeric()
         .withMessage('address building must be a number'),
+      body('medicines')
+        .optional()
+        .isArray()
+        .withMessage('clinic medicines must be array of ids'),
+      body('doctors')
+        .optional()
+        .isArray()
+        .withMessage('clinic doctors must be array of ids'),
+      body('patients')
+        .optional()
+        .isArray()
+        .withMessage('clinic patients must be array of ids'),
+      body('employees')
+        .optional()
+        .isArray()
+        .withMessage('clinic employees must be array of ids'),
+      body('reports')
+        .optional()
+        .isArray()
+        .withMessage('clinic reports must be array of ids'),
+      body('speciality')
+        .optional()
+        .isIn(['dentistry', 'general', 'nutrition', 'psychiatry'])
+        .withMessage(
+          'invalid clinic speciality please choose one from (dentistry,general, nutrition, psychiatry)'
+        ),
     ],
     validationMW,
     clinicController.updateClinic
@@ -85,7 +137,11 @@ router
 
 router
   .route('/clinic/:id')
-  .get(authMW, checkAutherizationMW(['admin']),clinicController.getClinicById)
-  .delete(authMW, checkAutherizationMW(['admin']),clinicController.deleteClinic);
+  .get(authMW, checkAutherizationMW(['admin']), clinicController.getClinicById)
+  .delete(
+    authMW,
+    checkAutherizationMW(['admin']),
+    clinicController.deleteClinic
+  );
 
 export default router;

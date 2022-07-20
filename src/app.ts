@@ -13,11 +13,11 @@ import appointmentRoutes from './routes/AppointmentRoute';
 import adminRoute from './routes/adminRoute';
 import reportRoute from './routes/reportRoute';
 import employeRoute from './routes/employRoute';
-import patientRoute from "./routes/patientRoute";
-import billsRoute from "./routes/billsRoute";
-import loginRoute from "./routes/loginRoute";
-import forgotPasswordRoute from "./routes/forgotPasswordRoute";
-import changePasswordRoute from "./routes/changePasswordRoute";
+import patientRoute from './routes/patientRoute';
+import billsRoute from './routes/billsRoute';
+import loginRoute from './routes/loginRoute';
+import forgotPasswordRoute from './routes/forgotPasswordRoute';
+import changePasswordRoute from './routes/changePasswordRoute';
 
 const server = express();
 const port: number = 8080;
@@ -57,6 +57,15 @@ server.use(changePasswordRoute);
 server.use((request: Request, response: Response) => {
   response.status(404).send('Page Not Found');
 });
+interface Error {
+  // @ts-ignore
+  status?: Number;
+}
+// d- One Error handling middleware
+// @ts-ignore
+// server.use(
+//   // @ts-ignore
+//   (error, request: Request, response: Response, next: NextFunction) => {
 
 // c- General middleware for not Found url pathes with 404 status code.
 server.use((request: Request, response: Response) => {
@@ -70,7 +79,12 @@ export interface ICustomError extends Error {
 // d- One Error handling middleware
 
 server.use(
-  (error: ICustomError, request: Request, response: Response, next: NextFunction) => {
+  (
+    error: ICustomError,
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) => {
     let status = error.status || 500;
     response.status(status).json({ message: 'Internal Error' + error });
   }

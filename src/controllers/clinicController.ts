@@ -11,8 +11,36 @@ export const getAllClinics = (
 ) => {
   // console.log(request.query);
   // console.log(request.params);
-  Clinic.find({})
-    .populate({ path: 'medicine', select: 'title description price' })
+  let clinicData: any;
+  // filtering clinics by speciality
+  // expected url http://localhost:8080/clinic?speciality=dentistry
+  if (request.query.speciality) {
+    clinicData = Clinic.find({ speciality: request.query.speciality })
+      .populate({ path: 'doctors', select: 'fullName' })
+      .populate({ path: 'medicines', select: 'title description price' })
+      .populate({ path: 'reports', select: 'invoiceReport appointmentReport' })
+      .populate({ path: 'patients', select: 'fullName' })
+      .populate({ path: 'employees', select: 'fullName' });
+  } else {
+    clinicData = Clinic.find({})
+      .populate({ path: 'doctors', select: 'fullName' })
+      .populate({ path: 'medicines', select: 'title description price' })
+      .populate({ path: 'reports', select: 'invoiceReport appointmentReport' })
+      .populate({ path: 'patients', select: 'fullName' })
+      .populate({ path: 'employees', select: 'fullName' });
+  }
+  // sorting by medicine name
+  // expected url http://localhost:8080/clinic?speciality=dentistry&sortByName=asc
+  // http://localhost:8080/medicine?filterByPrice=yes&greater=10&lesser=900&sortByPrice=asc
+
+  if (request.query.sortByName) {
+    if (request.query.sortByName == 'asc') clinicData.sort({ name: 1 });
+    else if (request.query.sortByName == 'des') {
+      clinicData.sort({ name: -1 });
+    }
+  }
+
+  clinicData
     .then(data => {
       response.status(200).json(data);
     })
@@ -35,7 +63,12 @@ export const createNewClinic = function (
       'address.city': request.body.address.city,
       'address.street': request.body.address.street,
       'address.building': request.body.address.building,
-      medicine: request.body.medicine,
+      speciality: request.body.speciality,
+      doctors: request.body.doctors,
+      medicines: request.body.medicines,
+      reports: request.body.reports,
+      employees: request.body.employees,
+      patients: request.body.patients,
     });
     clinic
       .save()
@@ -52,20 +85,20 @@ export const updateClinic = async (
   next: NextFunction
 ) => {
   try {
-    const data: any = await Clinic.findOne({ _id: request.body.id });
-
+    let data: any = await Clinic.findOne({ _id: request.body.id });
     for (let key in request.body) {
-      // console.log(key);
-      if (request.body[key].constructor.name == 'Array') {
+      // check if key is object type
+      if (request.body[key].constructor.name == 'Object') {
         for (let item in request.body[key]) {
-          data[key].push(request.body[key][item]);
+          data[key][item] = request.body[key][item];
         }
-      } else data[key] = request.body[key];
+      } else {
+        data[key] = request.body[key];
+      }
+
+      await data.save();
+      response.status(200).json({ data: 'clinic updated successfully' });
     }
-
-    await data.save();
-
-    response.status(200).json({ data: 'clinic Updated Successfully' + data });
   } catch (error) {
     next(error);
   }

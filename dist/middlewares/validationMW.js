@@ -5,7 +5,8 @@ exports.default = (request, response, next) => {
     let result = (0, express_validator_1.validationResult)(request);
     if (!result.isEmpty()) {
         //@ts-ignore
-        let message = result.errors.reduce((current, error) => current + error.msg + " ", "");
+        let message = result.errors.reduce((current, error) => current + error.msg + ' ', '');
+        //@ts-ignore
         let error = new Error(message);
         error.status = 422;
         throw error;

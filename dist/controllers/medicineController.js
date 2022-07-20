@@ -16,7 +16,32 @@ exports.deleteMedicine = exports.getMedicineById = exports.updateMedicine = expo
 const mongoose_1 = require("mongoose");
 const medicineModel_1 = __importDefault(require("../models/medicineModel"));
 const getAllMedicines = (request, response, next) => {
-    medicineModel_1.default.find({})
+    // filtering data by price in range
+    // expected url
+    // http://localhost:8080/medicine?filterByPrice=yes&greater=100&lesser=1200
+    let medicineData = request.query.filterByPrice
+        ? medicineModel_1.default.find({
+            price: { $gte: request.query.greater, $lte: request.query.lesser },
+        })
+        : medicineModel_1.default.find();
+    // sorting by price
+    // expected url http://localhost:8080/medicine?sortByPrice=des
+    if (request.query.sortByPrice) {
+        if (request.query.sortByPrice == 'asc')
+            medicineData.sort({ price: 1 });
+        else if (request.query.sortByPrice == 'des') {
+            medicineData.sort({ price: -1 });
+        }
+    }
+    // sorting by medicine name
+    if (request.query.sortByName) {
+        if (request.query.sortByName == 'asc')
+            medicineData.sort({ title: 1 });
+        else if (request.query.sortByName == 'des') {
+            medicineData.sort({ title: -1 });
+        }
+    }
+    medicineData
         .then(data => {
         response.status(200).json(data);
     })

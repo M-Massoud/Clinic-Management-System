@@ -7,7 +7,32 @@ export const getAllMedicines = (
   response: Response,
   next: NextFunction
 ) => {
-  Medicine.find({})
+  // filtering data by price in range
+  // expected url
+  // http://localhost:8080/medicine?filterByPrice=yes&greater=100&lesser=1200
+  let medicineData = request.query.filterByPrice
+    ? Medicine.find({
+        price: { $gte: request.query.greater, $lte: request.query.lesser },
+      })
+    : Medicine.find();
+
+  // sorting by price
+  // expected url http://localhost:8080/medicine?sortByPrice=des
+  if (request.query.sortByPrice) {
+    if (request.query.sortByPrice == 'asc') medicineData.sort({ price: 1 });
+    else if (request.query.sortByPrice == 'des') {
+      medicineData.sort({ price: -1 });
+    }
+  }
+  // sorting by medicine name
+  if (request.query.sortByName) {
+    if (request.query.sortByName == 'asc') medicineData.sort({ title: 1 });
+    else if (request.query.sortByName == 'des') {
+      medicineData.sort({ title: -1 });
+    }
+  }
+
+  medicineData
     .then(data => {
       response.status(200).json(data);
     })
